@@ -15,7 +15,6 @@ A data analytics project showcasing how AI-assisted prompt engineering can strea
 - [Example Prompt](#example-prompt)
 - [Ways to Use Claude for Data Cleaning](#ways-to-use-claude-for-data-cleaning)
 - [Results](#results)
-- [How to Use](#how-to-use)
 - [Tech Stack](#tech-stack)
 - [Lessons Learned](#lessons-learned)
 
@@ -120,22 +119,23 @@ The simplest way — no setup required.
 
    > *"You are a senior data analyst specialized in data quality and preprocessing. Audit the uploaded dataset for any data quality issues such as nulls, duplicates, wrong formats, and inconsistent values. Then clean the data by applying fixes and return the output in a new Excel sheet with column names in snake_case and dates in DD-MM-YYYY format. Do not drop any error rows — move them to a separate error sheet instead."*
 
-4. Claude will read the file, apply your cleaning instructions, and return the cleaned data — which you can copy or ask Claude to format as a downloadable CSV.
+4. Claude will read the file, apply your cleaning instructions, and return the cleaned data — which you can copy or ask Claude to format as a downloadable CSV/xlsx file.
 
 **Best for:** Quick one-off cleanings, small-to-medium datasets, and exploring prompts interactively.
 
 ---
 
 ### Method 2: Claude Add-in for Microsoft Excel
-
+ 
 Clean your data without ever leaving Excel using the **Claude for Excel** add-in.
-
-1. Install the Claude add-in from the [Microsoft AppSource](https://appsource.microsoft.com) or directly inside Excel via **Insert → Add-ins → Get Add-ins** and search for *Claude*.
+ 
+> **Note:** The Claude for Excel add-in requires a **paid Claude plan** (Pro, Team, or Enterprise). Make sure you have an active subscription at [claude.ai](https://claude.ai) before getting started.
+ 
+1. Install the Claude add-in directly inside Excel via **Insert → Add-ins → Get Add-ins** and search for *Claude*.
 2. Open your messy dataset in Excel and activate the Claude panel from the ribbon.
 3. Select the cells or columns you want to clean.
-4. Type your role-shot prompt in the Claude panel and hit **Run**.
+4. Type your role-based prompt in the Claude panel and hit **Run**.
 5. Claude processes the selected data and writes the cleaned output directly into your spreadsheet.
-
 **Best for:** Datasets already in Excel, repeatable cleaning workflows, and non-technical users who prefer working within a spreadsheet environment.
 
 ---
@@ -143,6 +143,7 @@ Clean your data without ever leaving Excel using the **Claude for Excel** add-in
 | | Method 1: Claude.ai (File Upload) | Method 2: Claude for Excel |
 |---|---|---|
 | Setup required | None | Install Excel add-in |
+| Pricing | Free & Paid plans | Paid plan required (Pro / Team / Enterprise) |
 | Best for | Quick, one-off cleaning | Repeated, in-spreadsheet workflows |
 | File types | CSV, Excel, TXT | Excel (.xlsx, .xls) |
 | Output | Chat response / copy-paste | Written directly into Excel cells |
@@ -162,51 +163,18 @@ Clean your data without ever leaving Excel using the **Claude for Excel** add-in
 | Inconsistent City Names | 178 | 0 |
 
 Claude successfully cleaned **~95%** of issues in the first pass, with only edge cases requiring a second review prompt.
-
----
-
-## How to Use
-
-### Prerequisites
-- An [Anthropic account](https://www.anthropic.com) or API key
-- Your messy dataset in CSV or plain text format
-
-### Steps
-
-1. **Clone this repository**
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
-   ```
-
-2. **Open your dataset** and identify the types of issues present.
-
-3. **Customize the prompt template** in `prompts/cleaning_prompt.txt`:
-   - Update the role description if needed
-   - Adjust the cleaning rules to match your dataset's issues
-   - Add 2–3 few-shot examples specific to your data
-
-4. **Paste your data** into the prompt and send it to Claude via:
-   - [Claude.ai](https://claude.ai) (chat interface)
-   - Anthropic API (Python/JS)
-
-5. **Review and iterate** — if some rows are not cleaned correctly, refine your examples or add more specific rules.
-
 ---
 
 ## Tech Stack
 
 - **Claude** (Anthropic) — AI model used for intelligent data cleaning
-- **Prompt Engineering** — Role-shot prompting strategy
-- **Python** *(optional)* — For batching large datasets via the Anthropic API
-- **CSV / Pandas** *(optional)* — For pre/post processing
+- **Prompt Engineering** — Role-based prompting strategy
 
 ---
 
 ## Lessons Learned
 
 - **Role context matters** — assigning an expert persona noticeably improved the quality and consistency of Claude's outputs compared to neutral prompts.
-- **Examples anchor behavior** — even 2–3 well-chosen shot examples dramatically reduced formatting inconsistencies in the output.
 - **Explicit rules > implicit assumptions** — the more specific the cleaning rules, the fewer surprises in the output.
 - **Iterative prompting works** — complex datasets benefit from a two-pass approach: first clean the obvious issues, then prompt again for edge cases.
 - **Claude explains its reasoning** — asking Claude to briefly explain changes it made helped audit the output and catch unexpected transformations.
