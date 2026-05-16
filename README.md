@@ -182,6 +182,4 @@ Claude successfully cleaned **~95%** of issues in the first pass, with only edge
 ---
 
 
-> Built with curiosity and Claude. Prompts are the new code.
-
 
