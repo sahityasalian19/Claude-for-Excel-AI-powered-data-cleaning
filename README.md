@@ -2,22 +2,22 @@
 
 # 🧹 Messy Dataset Cleaner — Powered by Claude AI
 
-A prompt engineering project demonstrating how to clean messy, inconsistent datasets using **role-shot prompting** with Claude (Anthropic's AI assistant). Instead of writing complex data-cleaning scripts from scratch, this project leverages carefully crafted prompts to instruct Claude to act as a professional data analyst and clean raw data intelligently.
+A data analytics project showcasing how AI-assisted prompt engineering can streamline the data cleaning process — using Claude as a smart, instruction-driven data cleaning partner.
 
 ---
 
 ## Table of Contents
- 
+
 - [Overview](#overview)
-- [What is Role-Shot Prompting?](#what-is-role-shot-prompting)
+- [What is Role-Based Prompting?](#what-is-role-based-prompting)
 - [Dataset Description](#dataset-description)
-- [Prompting Strategy](#prompting-strategy)
+- [Role-Based Prompting Strategy](#role-based-prompting-strategy)
 - [Example Prompt](#example-prompt)
+- [Ways to Use Claude for Data Cleaning](#ways-to-use-claude-for-data-cleaning)
 - [Results](#results)
 - [How to Use](#how-to-use)
 - [Tech Stack](#tech-stack)
 - [Lessons Learned](#lessons-learned)
-- [License](#license)
 
 ---
 
@@ -32,20 +32,21 @@ Real-world datasets are rarely clean. They often contain:
 - Typos and irregular casing
 - Outliers and invalid entries
 
-This project explores how **Claude**, guided through **role-shot prompting**, can interpret, reason about, and clean such data — producing a structured, analysis-ready output with minimal manual intervention.
+This project explores how **Claude**, guided through **role-based prompting**, can interpret, reason about, and clean such data — producing a structured, analysis-ready output with minimal manual intervention.
 
 ---
 
-## What is Role-Shot Prompting?
+## What is Role-Based Prompting?
 
-**Role-shot prompting** is a prompt engineering technique that combines two ideas:
+**Role-based prompting** is a prompt engineering technique where you assign Claude a specific expert persona before giving it a task. By telling Claude *who it is*, you shape how it thinks, reasons, and responds — unlocking domain-specific knowledge and judgment that leads to more accurate and context-aware outputs.
 
-| Technique | Description |
+Instead of asking Claude to "clean this data," you instruct it to respond *as* a senior data analyst who understands data quality standards, common inconsistencies, and best practices — resulting in far more intelligent and reliable cleaning decisions.
+
+| Without Role Prompting | With Role Prompting |
 |---|---|
-| **Role Prompting** | Assigning Claude a specific expert persona (e.g., *"You are a senior data analyst..."*) to shape its tone, reasoning style, and domain knowledge. |
-| **Shot Prompting** | Providing one or more examples (few-shot) of the input-output transformation you expect, so Claude understands the exact cleaning rules to apply. |
-
-Together, they give Claude both the **context** (who it is) and the **pattern** (what to do), resulting in more accurate, consistent, and explainable data cleaning.
+| Generic, surface-level fixes | Domain-aware, judgement-driven cleaning |
+| May miss context-specific issues | Applies industry-standard data quality rules |
+| Inconsistent output format | Structured, analysis-ready output |
 
 ---
 
@@ -62,47 +63,90 @@ The raw dataset used in this project contained the following issues:
 
 ---
 
-## Prompting Strategy
+## Role-Based Prompting Strategy
 
-The prompting was structured in three layers:
+The role-based prompting strategy was structured in three steps:
 
-### 1. 🎭 Role Assignment
-Claude was assigned the role of a **senior data engineer** with expertise in data quality and preprocessing. This primes the model to apply domain-specific judgment rather than making surface-level substitutions.
+### 1. Role Assignment
+Claude was assigned the role of a **senior data analyst** — responsible for profiling raw data, identifying quality issues, applying domain-specific cleaning rules, and ensuring the dataset is accurate, consistent, and ready for analysis.
 
-### 2. 📋 Rule Specification
-Explicit cleaning rules were provided within the prompt, covering each known issue in the dataset (date normalization, null handling, deduplication logic, etc.).
+### 2. Context & Goal Setting
+After defining the role, a clear objective was given — what the data represents, what the expected output format is, and what standards the cleaned data should meet. This gives Claude the *why* behind the task, not just the *what*.
 
-### 3. 🧪 Shot Examples (Few-Shot)
-A small number of before/after row examples were included directly in the prompt to demonstrate the expected transformation format — reducing ambiguity and anchoring Claude's output style.
+### 3. Instruction Specification
+Explicit, rule-based instructions were provided within the prompt, tailored to the specific issues present in the dataset — such as date normalization, null handling, deduplication, and format standardization. The more precise the instructions, the more consistent and reliable Claude's output.
 
 ---
 
 ## Example Prompt
 
 ```
-You are a senior data engineer with 10+ years of experience in data quality and preprocessing.
+You are a senior data analyst specialized in data quality and preprocessing.
+I'm uploading an Excel file that will be used for further analysis like dashboard creation and report creation.
 
-Your task is to clean the following messy dataset rows and return them in a standardized CSV format.
+Your job is to:
 
-Apply these rules:
-1. Normalize all dates to YYYY-MM-DD format.
-2. Standardize city names to Title Case.
-3. Replace all null-like values (N/A, none, -, blank) with an empty string.
-4. Remove exact duplicate rows.
-5. Validate email addresses — mark invalid ones as "INVALID_EMAIL".
-6. Ensure age is a positive integer between 0 and 120.
+1. AUDIT: First, identify all data quality issues (nulls, duplicates, wrong formats, outliers, 
+   inconsistent values). List them clearly.
 
-Here are two examples of the transformation:
+2. PLAN: Explain what you'll do to fix each issue and why.
 
-Input:  john doe | 28 | new york | 01/15/2023 | john.doe@email.com
-Output: John Doe | 28 | New York | 2023-01-15 | john.doe@email.com
+3. CLEAN: Apply the fixes and show me the cleaned data in a New Excel sheet.
 
-Input:  Jane Smith | -5 | BOSTON | N/A | notanemail
-Output: Jane Smith | | Boston | | INVALID_EMAIL
+Rules:
+- Column names must be snake_case
+- Dates must be in DD-MM-YYYY format
+- Do NOT drop rows with errors — Move them to a separate error sheet.
+  Example: If travel date is earlier than booking date, invalid Age values
 
-Now clean the following rows:
-[PASTE RAW DATA HERE]
+- You can create flag columns for the below:
+  Booking_Date_Flag | Age_flag | Travel_date_flag | Final_Price_INR_Flag |
+  Price_Validation_Flag | email_flag | Customer_Rating_flag | Booking_ID_flag | Customer_Name_flag
 ```
+
+---
+
+## Ways to Use Claude for Data Cleaning
+
+There are two approaches to using Claude for cleaning your messy dataset:
+
+### Method 1: Upload a File via Claude.ai
+
+The simplest way — no setup required.
+
+1. Go to [claude.ai](https://claude.ai) and start a new conversation.
+2. Click the **paperclip / attachment icon** and upload your messy dataset file (CSV, Excel, or plain text).
+3. Type your role-based prompt directly in the chat, for example:
+
+   > *"You are a senior data analyst specialized in data quality and preprocessing. Audit the uploaded dataset for any data quality issues such as nulls, duplicates, wrong formats, and inconsistent values. Then clean the data by applying fixes and return the output in a new Excel sheet with column names in snake_case and dates in DD-MM-YYYY format. Do not drop any error rows — move them to a separate error sheet instead."*
+
+4. Claude will read the file, apply your cleaning instructions, and return the cleaned data — which you can copy or ask Claude to format as a downloadable CSV.
+
+**Best for:** Quick one-off cleanings, small-to-medium datasets, and exploring prompts interactively.
+
+---
+
+### Method 2: Claude Add-in for Microsoft Excel
+
+Clean your data without ever leaving Excel using the **Claude for Excel** add-in.
+
+1. Install the Claude add-in from the [Microsoft AppSource](https://appsource.microsoft.com) or directly inside Excel via **Insert → Add-ins → Get Add-ins** and search for *Claude*.
+2. Open your messy dataset in Excel and activate the Claude panel from the ribbon.
+3. Select the cells or columns you want to clean.
+4. Type your role-shot prompt in the Claude panel and hit **Run**.
+5. Claude processes the selected data and writes the cleaned output directly into your spreadsheet.
+
+**Best for:** Datasets already in Excel, repeatable cleaning workflows, and non-technical users who prefer working within a spreadsheet environment.
+
+---
+
+| | Method 1: Claude.ai (File Upload) | Method 2: Claude for Excel |
+|---|---|---|
+| Setup required | None | Install Excel add-in |
+| Best for | Quick, one-off cleaning | Repeated, in-spreadsheet workflows |
+| File types | CSV, Excel, TXT | Excel (.xlsx, .xls) |
+| Output | Chat response / copy-paste | Written directly into Excel cells |
+| Technical skill needed | Minimal | Minimal |
 
 ---
 
@@ -169,10 +213,7 @@ Claude successfully cleaned **~95%** of issues in the first pass, with only edge
 
 ---
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 > Built with curiosity and Claude. Prompts are the new code.
+
+
